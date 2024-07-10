@@ -10,8 +10,8 @@ Route::get('/', function () {
     return view('welcome', ['file_selected' => false]);
 });
 
-Route::post('/file_processing',  [FileController::class, 'file_processing'])->name('file.processing');
-Route::post('/file_download',  [FileController::class, 'file_download'])->name('file.download');
+// Route::post('/file_processing',  [FileController::class, 'file_processing'])->name('file.processing');
+// Route::post('/file_download',  [FileController::class, 'file_download'])->name('file.download');
 
-// Route::post('/file_processing',  [LargeFileController::class, 'file_processing'])->name('file.processing');
-// Route::post('/file_download',  [LargeFileController::class, 'file_download'])->name('file.download');
+Route::post('/file_processing',  [LargeFileController::class, 'file_processing'])->name('file.processing');
+Route::post('/file_download',  [LargeFileController::class, 'file_download'])->name('file.download');

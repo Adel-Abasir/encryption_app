@@ -102,7 +102,7 @@
                                         {{-- <a href="{{ route('file.encrypt') }}" class="btn btn-success w-100">Encrypt</a> --}}
                                         <input type="hidden" name="download_name" value="{{ $file_info['file_name'] }}">
                                         <input type="hidden" name="file_name" value="{{ $file_info['file_hash_name'] }}">
-                                        <input type="hidden" name="end_file_name" value="{{ $file_info['end_file_name'] }}">
+                                        <input type="hidden" name="dest_file_name" value="{{ $file_info['end_file_name'] }}">
                                         <button type="submit" id="encrypt_file_btn" class="btn btn-light" @if (!$process_done) disabled @endif>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
                                                 fill="currentColor" class="bi bi-file-earmark-arrow-down"

@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\LaravelCipherService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class FileController extends Controller
 {
