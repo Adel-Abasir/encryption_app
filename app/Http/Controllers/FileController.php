@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\LaravelCipherService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
@@ -10,13 +11,10 @@ use Illuminate\Support\Str;
 
 class FileController extends Controller
 {
-    protected static $files_info = array();
+    private LaravelCipherService $laravelCipherService;
 
-    public function file_download(Request $request) {
-        $file_hash_name = $request->file_hash_name;
-        $file_original_name = $request->file_name;
-
-        return Storage::download($file_hash_name, $file_original_name);
+    public function __construct(){
+        $this->laravelCipherService = new LaravelCipherService();
     }
 
     public function file_processing(Request $request){
@@ -24,77 +22,34 @@ class FileController extends Controller
             return "Error while uploading file, please try again";
         }
 
-        $process_type = $request->encrypt_decrypt_radio;
-
         $file = $request->file('file_upload');
-        [$file_original_name, $file_extension, $file_size, $file_hash_name] = [
-            $file->getClientOriginalName(),
-            $file->extension(),
-            $file->getSize(),
-            $file->hashName()
-        ];
 
-        if($process_type == "encrypt"){
-            $this->file_encryption($file, $file_original_name, $file_hash_name);
+        if($request->cipher_type == "encrypt"){
+            $this->laravelCipherService->encrypt($file, $file->hashName());
         };
 
-        if($process_type == "decrypt"){
-            $this->file_decryption($file, $file_original_name, $file_hash_name);
+        if($request->cipher_type == "decrypt"){
+            $this->laravelCipherService->decrypt($file, $file->hashName());
         };
 
         return view(
             'welcome',
             [
                 'file_info' => [
-                    'file_name' => $file_original_name, 
-                    'file_extension' => $file_extension, 
-                    'file_size' => $file_size,
-                    'file_hash_name' => $file_hash_name,
+                    'file_name' => $file->getClientOriginalName(), 
+                    'file_extension' => $file->extension(), 
+                    'file_size' => $file->getSize(),
+                    'file_hash_name' => $file->hashName(),
                     'end_file_name' => ''
                 ],
                 'process_done' => true,
-                'process_info' => $process_type == 'encrypt' ? "Encryption Done!" : "Decryption Done!",
+                'process_info' => $request->cipher_type == 'encrypt' ? "Encryption Done!" : "Decryption Done!",
                 'file_selected' => true
             ]
         );
-    }
+    }    
 
-    private function read_file_content($file, $file_hash_name){
-        $file_path = $file->storeAs('/', $file_hash_name);
-        $file_content = Storage::get($file_path);
-        Storage::delete($file_path);
-
-        return $file_content;
-    }
-
-    private function file_encryption($file, $file_original_name, $file_hash_name){
-        $file_content = $this->read_file_content($file, $file_hash_name);
-
-        try {
-            $encrypted_content = Crypt::encryptString($file_content);
-
-            echo "File encrypted using laravel helper functions!\n";
-            echo 'Memory usage: ' . round(memory_get_usage() / 1048576, 2) . "M\n";
-            
-            return Storage::put($file_hash_name, $encrypted_content);   
-        } catch (DecryptException $e) {
-            dump(["Oops, Something went wrong", $e]);
-        }
-        
-    }
-    
-    private function file_decryption($file, $file_original_name, $file_hash_name){
-        $file_content = $this->read_file_content($file, $file_hash_name);
-
-        try {
-            $decrypted_content = Crypt::decryptString($file_content);
-           
-            echo "File encrypted using laravel helper functions!\n";
-            echo 'Memory usage: ' . round(memory_get_usage() / 1048576, 2) . "M\n";
-           
-            return Storage::put($file_hash_name, $decrypted_content);
-        } catch (DecryptException $e) {
-            dump(["Oops, Something went wrong", $e]);
-        }
+    public function file_download(Request $request) {
+        return Storage::download($request->file_name, $request->download_name);
     }
 }
