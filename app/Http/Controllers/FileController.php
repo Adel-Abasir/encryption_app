@@ -49,7 +49,8 @@ class FileController extends Controller
                     'file_name' => $file_original_name, 
                     'file_extension' => $file_extension, 
                     'file_size' => $file_size,
-                    'file_hash_name' => $file_hash_name
+                    'file_hash_name' => $file_hash_name,
+                    'end_file_name' => ''
                 ],
                 'process_done' => true,
                 'process_info' => $process_type == 'encrypt' ? "Encryption Done!" : "Decryption Done!",
@@ -71,6 +72,10 @@ class FileController extends Controller
 
         try {
             $encrypted_content = Crypt::encryptString($file_content);
+
+            echo "File encrypted using laravel helper functions!\n";
+            echo 'Memory usage: ' . round(memory_get_usage() / 1048576, 2) . "M\n";
+            
             return Storage::put($file_hash_name, $encrypted_content);   
         } catch (DecryptException $e) {
             dump(["Oops, Something went wrong", $e]);
@@ -83,6 +88,10 @@ class FileController extends Controller
 
         try {
             $decrypted_content = Crypt::decryptString($file_content);
+           
+            echo "File encrypted using laravel helper functions!\n";
+            echo 'Memory usage: ' . round(memory_get_usage() / 1048576, 2) . "M\n";
+           
             return Storage::put($file_hash_name, $decrypted_content);
         } catch (DecryptException $e) {
             dump(["Oops, Something went wrong", $e]);

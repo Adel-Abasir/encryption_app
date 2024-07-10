@@ -48,7 +48,7 @@
 
                             <div class="form-check col-10 col-sm-5 pl-5">
                                 <input class="form-check-input" type="radio" name="encrypt_decrypt_radio"
-                                    id="encyrpt_radio" value="encrypt" checked>
+                                    id="encyrpt_radio" value="encrypt" checked required>
                                 <label class="form-check-label" for="encyrpt_radio">
                                     Encrypt Files
                                 </label>
@@ -67,7 +67,7 @@
                         <label for="formFileMultiple" class="form-label">Select Files</label>
                     </div> --}}
                     <div class="col-12 col-lg-10 mb-3">
-                        <input class="form-control" type="file" id="formFileMultiple" name="file_upload">
+                        <input class="form-control" type="file" id="formFileMultiple" name="file_upload" required>
                     </div>
                     <div class="col-4 col-lg-2 mb-3">
                         <button type="submit" class="btn btn-primary w-100">let's begin</button>

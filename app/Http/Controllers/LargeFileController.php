@@ -89,6 +89,10 @@ class LargeFileController extends Controller
         fclose($fpSource);
         fclose($fpDest);
         Storage::delete($saved_file);
+
+        echo "File encrypted using OpenSSL Code!\n";
+        echo 'Memory usage: ' . round(memory_get_usage() / 1048576, 2) . "M\n";
+        
         return $uuid;        
     }
     
@@ -119,6 +123,10 @@ class LargeFileController extends Controller
         fclose($fpSource);
         fclose($fpDest);
         Storage::delete($saved_file);
+       
+        echo "File encrypted using OpenSSL Code!\n";
+        echo 'Memory usage: ' . round(memory_get_usage() / 1048576, 2) . "M\n";
+       
         return $uuid;
     }
 }
