@@ -19,12 +19,12 @@
     <title>File Encryption App</title>
 
     <!-- add icon link -->
-    <link rel="icon" href="{{ asset('assets/logo.png') }}" type="image/x-icon"> 
+    <link rel="icon" href="{{ asset('assets/logo.png') }}" type="image/x-icon">
 </head>
 
 <body>
-    <div class="container align-items-center my-4 mx-auto">
-        <div class="row justify-content-center">
+    <div class="container d-flex flex-column justify-content-center" style="height: 80vh">
+        <div class="row justify-content-center w-100">
             <a class="col-6 m-2 text-center text-decoration-none" href="/">
                 <img src="{{ asset('assets/logo.png') }}" alt="" width="150"
                     class="d-inline-block align-text-top">
@@ -34,10 +34,8 @@
                 </div>
             </a>
         </div>
-    </div>
 
-    <div class="container">
-        <div class="row justify-content-center pt-2">
+        <div class="row justify-content-center pt-2 w-100">
             <div class="col-12">
                 <form action="{{ route('file.processing') }}" method="POST" enctype="multipart/form-data"
                     class="row">
@@ -47,15 +45,15 @@
                         <div class="row">
 
                             <div class="form-check col-10 col-sm-5 pl-5">
-                                <input class="form-check-input" type="radio" name="cipher_type"
-                                    id="encyrpt_radio" value="encrypt" checked required>
+                                <input class="form-check-input" type="radio" name="cipher_type" id="encyrpt_radio"
+                                    value="encrypt" checked required>
                                 <label class="form-check-label" for="encyrpt_radio">
                                     Encrypt Files
                                 </label>
                             </div>
                             <div class="form-check col-10 col-sm-5 pl-5">
-                                <input class="form-check-input" type="radio" name="cipher_type"
-                                    id="decrypt_radio" value="decrypt">
+                                <input class="form-check-input" type="radio" name="cipher_type" id="decrypt_radio"
+                                    value="decrypt">
                                 <label class="form-check-label" for="decrypt_radio">
                                     Decrypt Files
                                 </label>
@@ -64,8 +62,8 @@
                     </div>
 
                     {{-- <div class="col-12 col-lg-2 mb-3 fs-5">
-                        <label for="formFileMultiple" class="form-label">Select Files</label>
-                    </div> --}}
+                            <label for="formFileMultiple" class="form-label">Select Files</label>
+                        </div> --}}
                     <div class="col-12 col-lg-10 mb-3">
                         <input class="form-control" type="file" id="formFileMultiple" name="file_upload" required>
                     </div>
@@ -93,17 +91,22 @@
                             <tr>
                                 <td width="60%" class=" text-wrap">{{ $file_info['file_name'] }}</td>
                                 <td width="10%" class="">{{ $file_info['file_extension'] }}</td>
-                                <td width="10%" class="">{{ number_format($file_info['file_size'] / 1000, 0) }}KB</td>
+                                <td width="10%" class="">
+                                    {{ number_format($file_info['file_size'] / 1000, 0) }}KB</td>
                                 <td width="10%" class="">{{ $process_info }}</td>
                                 <td width="10%" class="">
                                     <form action="{{ route('file.download') }}" method="POST"
                                         enctype="multipart/form-data">
                                         @csrf
                                         {{-- <a href="{{ route('file.encrypt') }}" class="btn btn-success w-100">Encrypt</a> --}}
-                                        <input type="hidden" name="download_name" value="{{ $file_info['file_name'] }}">
-                                        <input type="hidden" name="file_name" value="{{ $file_info['file_hash_name'] }}">
-                                        <input type="hidden" name="dest_file_name" value="{{ $file_info['end_file_name'] }}">
-                                        <button type="submit" id="encrypt_file_btn" class="btn btn-light" @if (!$process_done) disabled @endif>
+                                        <input type="hidden" name="download_name"
+                                            value="{{ $file_info['file_name'] }}">
+                                        <input type="hidden" name="file_name"
+                                            value="{{ $file_info['file_hash_name'] }}">
+                                        <input type="hidden" name="dest_file_name"
+                                            value="{{ $file_info['end_file_name'] }}">
+                                        <button type="submit" id="encrypt_file_btn" class="btn btn-light"
+                                            @if (!$process_done) disabled @endif>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
                                                 fill="currentColor" class="bi bi-file-earmark-arrow-down"
                                                 viewBox="0 0 16 16">
@@ -121,12 +124,12 @@
                 </div>
             </div>
         @endif
+    </div>
 
-
-        <!-- Option 1: Bootstrap Bundle with Popper -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-        </script>
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+    </script>
 </body>
 
 </html>
