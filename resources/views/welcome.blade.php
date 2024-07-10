@@ -43,17 +43,17 @@
                     class="row">
                     @csrf
 
-                    <div class="col-12 mb-3  fs-5">
-                        <div class="row justify-content-evenly">
+                    <div class="col-12 mb-3 ps-4 fs-5">
+                        <div class="row">
 
-                            <div class="form-check col-10 col-sm-4 pl-5">
+                            <div class="form-check col-10 col-sm-5 pl-5">
                                 <input class="form-check-input" type="radio" name="encrypt_decrypt_radio"
                                     id="encyrpt_radio" value="encrypt" checked>
                                 <label class="form-check-label" for="encyrpt_radio">
                                     Encrypt Files
                                 </label>
                             </div>
-                            <div class="form-check col-10 col-sm-4 pl-5">
+                            <div class="form-check col-10 col-sm-5 pl-5">
                                 <input class="form-check-input" type="radio" name="encrypt_decrypt_radio"
                                     id="decrypt_radio" value="decrypt">
                                 <label class="form-check-label" for="decrypt_radio">
@@ -63,10 +63,10 @@
                         </div>
                     </div>
 
-                    <div class="col-12 col-lg-2 mb-3 fs-5">
+                    {{-- <div class="col-12 col-lg-2 mb-3 fs-5">
                         <label for="formFileMultiple" class="form-label">Select Files</label>
-                    </div>
-                    <div class="col-12 col-lg-8 mb-3">
+                    </div> --}}
+                    <div class="col-12 col-lg-10 mb-3">
                         <input class="form-control" type="file" id="formFileMultiple" name="file_upload">
                     </div>
                     <div class="col-4 col-lg-2 mb-3">
