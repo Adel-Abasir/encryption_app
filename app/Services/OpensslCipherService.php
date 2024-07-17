@@ -97,7 +97,7 @@ class OpensslCipherService {
         while (! feof($fpSource)) {
             $ciphertext = fread($fpSource, $ivLenght * (FILE_ENCRYPTION_BLOCKS + 1));
             $plaintext = openssl_decrypt($ciphertext, CIPHER, APP_KEY, OPENSSL_RAW_DATA, $iv);
-            $iv = substr($plaintext, 0, $ivLenght);
+            $iv = substr($ciphertext, 0, $ivLenght);
 
             fwrite($fpDest, $plaintext);
         }
