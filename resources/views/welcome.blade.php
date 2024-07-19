@@ -35,10 +35,23 @@
             </a>
         </div>
 
+        @if (session('error'))
+            <div id="error-message" class="row justify-content-center pt-2 w-100">
+                <div class="col-12">
+                    <div class="alert alert-danger">test{{ session('error') }}</div>
+                </div>
+            </div>
+        @endif
+
+        <div id="error-message-js" class="row justify-content-center pt-2 w-100" style="display: none">
+            <div class="col-12">
+                <div id="error-msg-content" class="alert alert-danger"></div>
+            </div>
+        </div>
+
         <div class="row justify-content-center pt-2 w-100">
             <div class="col-12">
-                <form action="{{ route('file.processing') }}" method="POST" enctype="multipart/form-data"
-                    class="row">
+                <form enctype="multipart/form-data" class="row">
                     @csrf
 
                     <div class="col-12 mb-3 ps-4 fs-5">
@@ -61,75 +74,93 @@
                         </div>
                     </div>
 
-                    {{-- <div class="col-12 col-lg-2 mb-3 fs-5">
-                            <label for="formFileMultiple" class="form-label">Select Files</label>
-                        </div> --}}
                     <div class="col-12 col-lg-10 mb-3">
-                        <input class="form-control" type="file" id="formFileMultiple" name="file_upload" required>
+                        <input type="file" id="browseFile" class="form-control" name="file_upload" required>
                     </div>
                     <div class="col-4 col-lg-2 mb-3">
-                        <button type="submit" class="btn btn-primary w-100">let's begin</button>
+                        <button id="uploadBtn" type="submit" class="btn btn-primary w-100">let's begin</button>
                     </div>
                 </form>
             </div>
         </div>
 
-        @if (!empty($file_info))
-            <div class="row justify-content-center pt-2">
-                <div class="col-12 table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">Extension</th>
-                                <th scope="col">Size</th>
-                                <th scope="col">Process</th>
-                                <th scope="col">Download</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td width="60%" class=" text-wrap">{{ $file_info['file_name'] }}</td>
-                                <td width="10%" class="">{{ $file_info['file_extension'] }}</td>
-                                <td width="10%" class="">
-                                    {{ number_format($file_info['file_size'] / 1000, 0) }}KB</td>
-                                <td width="10%" class="">{{ $process_info }}</td>
-                                <td width="10%" class="">
-                                    <form action="{{ route('file.download') }}" method="POST"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        {{-- <a href="{{ route('file.encrypt') }}" class="btn btn-success w-100">Encrypt</a> --}}
-                                        <input type="hidden" name="download_name"
-                                            value="{{ $file_info['file_name'] }}">
-                                        <input type="hidden" name="file_name"
-                                            value="{{ $file_info['file_hash_name'] }}">
-                                        <input type="hidden" name="dest_file_name"
-                                            value="{{ $file_info['end_file_name'] }}">
-                                        <button type="submit" id="encrypt_file_btn" class="btn btn-light"
-                                            @if (!$process_done) disabled @endif>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                                                fill="currentColor" class="bi bi-file-earmark-arrow-down"
-                                                viewBox="0 0 16 16">
-                                                <path
-                                                    d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293z" />
-                                                <path
-                                                    d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
-                                            </svg>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <div class="row justify-content-center pt-2 w-100">
+            <div class="col-12">
+                <div style="display: none; height: 2rem;" class="progress">
+                    <div class="progress-bar bg-dark progress-bar-animated" role="progressbar"
+                        aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%; height: 100%">
+                        Uploading...75%
+                    </div>
                 </div>
             </div>
-        @endif
+        </div>
+
+        {{-- @if (!empty($file_info)) --}}
+        <div id="file_info_row" class="row justify-content-center pt-2" style="display: none">
+            <div class="col-12 table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Extension</th>
+                            <th scope="col">Size</th>
+                            <th scope="col">Process</th>
+                            <th scope="col">Download</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="file_name" width="60%" class=" text-wrap"></td>
+                            <td id="file_mime_type" width="10%"></td>
+                            <td id="file_size" width="10%"></td>
+                            <td id="file_process_info" width="10%"></td>
+                            <td width="10%">
+                                <form action="{{ route('file.download') }}" method="POST"
+                                    enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="download_name" value="">
+                                    <input type="hidden" name="file_name" value="">
+                                    <input type="hidden" name="dest_file_name" value="">
+                                    <button type="submit" id="file_download_btn" class="btn btn-light">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                            fill="currentColor" class="bi bi-file-earmark-arrow-down"
+                                            viewBox="0 0 16 16">
+                                            <path
+                                                d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293z" />
+                                            <path
+                                                d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
+                                        </svg>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {{-- @endif --}}
     </div>
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/resumablejs@1.1.0/resumable.min.js"></script>
+
+    <script>
+        window.routes = {
+            file_upload: "{{ route('upload') }}",
+            file_processing: "{{ route('file.processing') }}"
+        };
+    </script>
+
+    <script src="{{ asset('assets/js/app.js') }}"></script>
+
+
 </body>
 
 </html>

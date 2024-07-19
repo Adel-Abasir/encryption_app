@@ -10,43 +10,36 @@ class LargeFileController extends Controller
 {
     private OpensslCipherService $opensslCipherService;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->opensslCipherService = new OpensslCipherService();
     }
 
-    public function file_processing(Request $request){
-        if (!$request->hasFile('file_upload')) {
-            return "Error while uploading file, please try again";
+    public function file_processing(Request $request)
+    {
+        try {
+            if ($request->cipher_type == "encrypt") {
+                $dest_file_name = $this->opensslCipherService->encrypt($request->hash_name);
+            };
+
+            if ($request->cipher_type == "decrypt") {
+                $dest_file_name = $this->opensslCipherService->decrypt($request->hash_name);
+            };
+        } catch (\Throwable $e) {
+            return $e->getMessage();
         }
 
-        $file = $request->file('file_upload');
+        return response()->json([
+            'message' => 'Cipher Prossess Completed Successfully',
+            'data' => array_merge($request->all(), ['dest_file_name' => $dest_file_name]),
+        ]);
+    }
 
-        if($request->cipher_type == "encrypt"){
-            $dest_file_name = $this->opensslCipherService->encrypt($file, $file->hashName());
-        };
+    public function file_download(Request $request)
+    {
+        if (!Storage::exists('cipher-files/' . $request->dest_file_name))
+            return back()->withError("File does not exists or it's been deleted, Please try uploading the file again.")->withInput();
 
-        if($request->cipher_type == "decrypt"){
-            $dest_file_name = $this->opensslCipherService->decrypt($file, $file->hashName());
-        };
-
-        return view(
-            'welcome',
-            [
-                'file_info' => [
-                    'file_name' => $file->getClientOriginalName(), 
-                    'file_extension' => $file->extension(), 
-                    'file_size' => $file->getSize(),
-                    'file_hash_name' => $file->hashName(),
-                    'end_file_name' => $dest_file_name
-                ],
-                'process_done' => true,
-                'process_info' => $request->cipher_type == 'encrypt' ? "Encryption Done!" : "Decryption Done!",
-                'file_selected' => true
-            ]
-        );
-    }    
-
-    public function file_download(Request $request) {
-        return Storage::download($request->dest_file_name, $request->download_name);
+        return Storage::download('cipher-files/' . $request->dest_file_name, $request->download_name);
     }
 }

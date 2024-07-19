@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\FileController;
 
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\LargeFileController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FileUploadController;
 
 Route::get('/', function () {
-    return view('welcome', ['file_selected' => false]);
+    return view('welcome');
 });
 
 // Route::post('/file_processing',  [FileController::class, 'file_processing'])->name('file.processing');
@@ -15,3 +17,5 @@ Route::get('/', function () {
 
 Route::post('/file_processing',  [LargeFileController::class, 'file_processing'])->name('file.processing');
 Route::post('/file_download',  [LargeFileController::class, 'file_download'])->name('file.download');
+
+Route::post('/upload',  [FileUploadController::class, 'upload'])->name('upload');
