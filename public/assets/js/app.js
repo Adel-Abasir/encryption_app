@@ -30,8 +30,11 @@ $(document).ready(function () {
         errorMsg.hide();
         errorMsgJs.hide();
 
+        $("#encrypt_radio").prop("disabled", true);
+        $("#decrypt_radio").prop("disabled", true);
         browseFile.prop("disabled", true);
         uploadBtn.prop("disabled", true);
+        $("#file_info_row").hide();
         showProgress();
         resumable.upload(); // to actually start uploading.
     });
@@ -85,7 +88,6 @@ resumable.on("fileSuccess", function (file, response) {
             $("#file_download_btn").prop("disabled", false);
 
             $("input[name='download_name']").val(response.data.name);
-            $("input[name='file_name']").val(response.data.hash_name);
             $("input[name='dest_file_name']").val(response.data.dest_file_name);
         },
         error: function (error) {
@@ -96,6 +98,8 @@ resumable.on("fileSuccess", function (file, response) {
         },
     });
 
+    $("#encrypt_radio").prop("disabled", false);
+    $("#decrypt_radio").prop("disabled", false);
     browseFile.prop("disabled", false);
     uploadBtn.prop("disabled", false);
 });
@@ -103,6 +107,8 @@ resumable.on("fileSuccess", function (file, response) {
 resumable.on("fileError", function (file, response) {
     hideProgress();
 
+    $("#encrypt_radio").prop("disabled", false);
+    $("#decrypt_radio").prop("disabled", false);
     browseFile.val("");
     browseFile.prop("disabled", false);
     uploadBtn.prop("disabled", false);

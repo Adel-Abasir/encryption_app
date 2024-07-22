@@ -119,7 +119,6 @@
                                     enctype="multipart/form-data">
                                     @csrf
                                     <input type="hidden" name="download_name" value="">
-                                    <input type="hidden" name="file_name" value="">
                                     <input type="hidden" name="dest_file_name" value="">
                                     <button type="submit" id="file_download_btn" class="btn btn-light">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"

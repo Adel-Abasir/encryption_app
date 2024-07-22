@@ -80,7 +80,7 @@ class OpensslCipherService
             $this->delete_file($file_name);
             $this->delete_file($dest_file_name);
 
-            throw new EncryptException('File already Encrypted, Did you mean to choose Decrypt!', 500);
+            throw new EncryptException('File already Encrypted.', 500);
         }
 
         $ivLenght = openssl_cipher_iv_length(CIPHER);
