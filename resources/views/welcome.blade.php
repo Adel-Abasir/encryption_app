@@ -38,7 +38,7 @@
         @if (session('error'))
             <div id="error-message" class="row justify-content-center pt-2 w-100">
                 <div class="col-12">
-                    <div class="alert alert-danger">test{{ session('error') }}</div>
+                    <div class="alert alert-danger">{{ session('error') }}</div>
                 </div>
             </div>
         @endif
